@@ -4,7 +4,7 @@
     "slug": "Be-My-Eyes",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    // "icon": "./assets/images/icon.png",
     "scheme": "bemyeyes",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
