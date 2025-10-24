@@ -1,14 +1,13 @@
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Button, View } from "react-native";
+import ControlButtons from "../../components/ControlButton";
+import LocationDisplay from "../../components/LocationDisplay";
 import { useLocation } from "../../hooks/useLocation";
-import { useVoice } from "../../hooks/useVoice";
-import ControlButtons from "./components/ControlButton";
-import LocationDisplay from "./components/LocationDisplay";
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { location, address, gpsActive, activateGPS, deactivateGPS } =
     useLocation();
-
-  const { spokenText, destination, handleVoiceCommand } = useVoice();
 
   return (
     <View
@@ -19,6 +18,10 @@ export default function HomeScreen() {
         backgroundColor: "white",
       }}
     >
+      <Button title="Passer" onPress={() => router.push("/(tabs)/Input")} />
+
+      <View style={{ marginBottom: 20 }} />
+
       <ControlButtons
         pressActive={activateGPS}
         pressDesactive={deactivateGPS}
@@ -29,11 +32,6 @@ export default function HomeScreen() {
         address={address}
         gpsActive={gpsActive}
       />
-
-      <View style={{ marginTop: 20, alignItems: "center" }}>
-        <Text>Vous avez dit : {spokenText}</Text>
-        <Text>Destination : {destination}</Text>
-      </View>
     </View>
   );
 }

@@ -47,7 +47,7 @@ export const useLocation = () => {
         }),
       3000
     );
-    setTimeout(() => Speech.speak("dites votre destination"), 3000);
+    // setTimeout(() => Speech.speak("dites votre destination"), 3000);
 
     setGpsActive(true);
     Alert.alert("GPS activé !");
