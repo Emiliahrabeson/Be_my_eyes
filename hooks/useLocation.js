@@ -11,6 +11,7 @@ export const useLocation = () => {
   useEffect(() => {
     if (gpsActive) {
       const interval = setInterval(() => {
+        //active tous les 10mins
         pressActive();
       }, 600000);
       return () => clearInterval(interval);
@@ -18,7 +19,7 @@ export const useLocation = () => {
   }, [gpsActive]);
 
   const pressActive = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync(); //demande permission
 
     if (status !== "granted") {
       Alert.alert("Permission refusée");
@@ -26,12 +27,14 @@ export const useLocation = () => {
     }
 
     const localisation = await Location.getCurrentPositionAsync({
+      //recup position
       accuracy: Location.Accuracy.Highest,
     });
 
     console.log("Position :", localisation);
     setLocation(localisation);
 
+    //mamadika long/lat ho adresse
     const addr = await Location.reverseGeocodeAsync({
       latitude: localisation.coords.latitude,
       longitude: localisation.coords.longitude,
@@ -43,11 +46,11 @@ export const useLocation = () => {
     setTimeout(
       () =>
         Speech.speak(`vous etes à ${addr[0].formattedAddress}`, {
+          //formattedAdress le adresse plus precis
           language: "mg-MG",
         }),
       3000
     );
-    // setTimeout(() => Speech.speak("dites votre destination"), 3000);
 
     setGpsActive(true);
     Alert.alert("GPS activé !");

@@ -1,16 +1,23 @@
-import { useRouter } from "expo-router";
+//boutton activation/desactivation
+
+import { useRouter } from "expo-router"; //nav
 import { Button, View } from "react-native";
-import ControlButtons from "../../components/ControlButton";
-import LocationDisplay from "../../components/LocationDisplay";
-import { useLocation } from "../../hooks/useLocation";
-import { useDestination } from "./destinationContext";
+import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
+import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
+import { useGuide } from "../../hooks/useGuide";
+import { useLocation } from "../../hooks/useLocation"; //maka position actuelle pour le boutton activer
+import { useDestination } from "./destinationContext"; //boite
 
 export default function HomeScreen() {
   const router = useRouter();
   const { location, address, gpsActive, activateGPS, deactivateGPS } =
     useLocation();
 
-  const { destination, distance } = useDestination();
+  const { destination, distance, destinationCoords } = useDestination(); //*************** distance tsy miasa
+  const { currentDistance, announceNow } = useGuide(
+    destination,
+    destinationCoords
+  );
 
   return (
     <View
@@ -27,8 +34,7 @@ export default function HomeScreen() {
       />
 
       <View style={{ marginBottom: 20 }} />
-
-      {/* {destination && distance && (
+      {destination && currentDistance && (
         <View
           style={{
             padding: 15,
@@ -41,19 +47,20 @@ export default function HomeScreen() {
           <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}>
             Destination: {destination}
           </Text>
-          <Text style={{ fontSize: 18, color: "#1976d2" }}>
-            Distance: {distance} km
+
+          <Text style={{ fontSize: 18, color: "#1976d2", marginBottom: 10 }}>
+            Distance: {currentDistance} km
           </Text>
+
+          {/* Bouton pour annoncer la distance tout de suite */}
+          <Button title="Annoncer distance maintenant" onPress={announceNow} />
         </View>
-      )} */}
-
+      )}
       <View style={{ marginBottom: 20 }} />
-
       <ControlButtons
         pressActive={activateGPS}
         pressDesactive={deactivateGPS}
       />
-
       <LocationDisplay
         location={location}
         address={address}
@@ -62,3 +69,9 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+//le tapoter 2x ...
+//integration de données de Mioty
+//intégration de données Ayan
+//liaison avec l'app de Maharavo
+//enregistrer un adresse

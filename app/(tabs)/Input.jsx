@@ -15,20 +15,25 @@ import { useDestination } from "./destinationContext";
 export default function Input() {
   const [destinationInput, setDestinationInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const monAddresse = [
-    {
-      maison: "Antsahamarina Ambohitrimanjaka Antananarivo Madagascar",
-    },
-    {
-      Misa: "Université d'Antananarivo Ankatso Antananarivo Madagascar",
-    },
-    {
-      cité: "CUR Ankatso II Antananarivo Madagascar",
-    },
-  ];
-
-  const { setDestination, setDistance } = useDestination();
   const router = useRouter();
+
+  const { setDestination, setDistance, setDestinationCoords } =
+    useDestination();
+
+  // const monAddresse = [
+  //   {
+  //     name: "maison",
+  //     adresse: "Antsahamarina Ambohitrimanjaka Antananarivo Madagascar",
+  //   },
+  //   {
+  //     name: "Misa",
+  //     adresse: "Université d'Antananarivo Ankatso Antananarivo Madagascar",
+  //   },
+  //   {
+  //     name: "cité",
+  //     adresse: "CUR Ankatso II Antananarivo Madagascar",
+  //   },
+  // ];
 
   //calcul de distance
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -49,6 +54,7 @@ export default function Input() {
     return distance.toFixed(2);
   };
 
+  // validation input
   const handleValidate = async () => {
     if (destinationInput.trim() === "") {
       Alert.alert("Erreur", "Veuillez entrer une destination");
@@ -64,13 +70,13 @@ export default function Input() {
       return;
     }
 
-    const currentPosition = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
+    const localisation = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High, //plus precis
     });
 
-    const geocodedDestination = await Location.geocodeAsync(destinationInput);
+    const addr_dest_Input = await Location.geocodeAsync(destinationInput); //maka lat/long anle destinationInput
 
-    if (geocodedDestination.length === 0) {
+    if (addr_dest_Input.length === 0) {
       Alert.alert(
         "Erreur",
         "Destination introuvable. Essayez d'être plus précis."
@@ -79,32 +85,31 @@ export default function Input() {
       return;
     }
 
-    const destCoords = geocodedDestination[0];
+    const destination_address = addr_dest_Input[0];
 
     const dist = calculateDistance(
-      currentPosition.coords.latitude,
-      currentPosition.coords.longitude,
-      destCoords.latitude,
-      destCoords.longitude
+      localisation.coords.latitude,
+      localisation.coords.longitude,
+      destination_address.latitude,
+      destination_address.longitude
     );
 
     setDestination(destinationInput);
     setDistance(dist);
+    setDestinationCoords(destination_address);
 
     Speech.speak(`Vous êtes à ${dist} kilomètres de ${destinationInput}`, {
       language: "fr-FR",
     });
+    if (dist <= 0.4) {
+      Speech.speak("Vous etes arrivé", {
+        language: "fr-FR",
+      });
+    }
 
-    Alert.alert(
-      "Distance calculée",
-      `Il vous reste ${dist} km jusqu'à ${destinationInput}`,
-      [
-        {
-          text: "OK",
-          onPress: () => router.back(),
-        },
-      ]
-    );
+    setTimeout(() => {
+      router.back();
+    }, 3000);
 
     setLoading(false);
   };
