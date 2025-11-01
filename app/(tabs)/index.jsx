@@ -13,7 +13,7 @@ export default function HomeScreen() {
   const { location, address, gpsActive, activateGPS, deactivateGPS } =
     useLocation();
 
-  const { destination, distance, destinationCoords } = useDestination(); //*************** distance tsy miasa
+  const { destination, distance, destinationCoords } = useDestination();
   const { currentDistance, announceNow } = useGuide(
     destination,
     destinationCoords
@@ -51,9 +51,6 @@ export default function HomeScreen() {
           <Text style={{ fontSize: 18, color: "#1976d2", marginBottom: 10 }}>
             Distance: {currentDistance} km
           </Text>
-
-          {/* Bouton pour annoncer la distance tout de suite */}
-          <Button title="Annoncer distance maintenant" onPress={announceNow} />
         </View>
       )}
       <View style={{ marginBottom: 20 }} />
@@ -70,8 +67,7 @@ export default function HomeScreen() {
   );
 }
 
-//le tapoter 2x ...
 //integration de données de Mioty
-//intégration de données Ayan
+//intégration de données Ayan (obstacle,escalier)
 //liaison avec l'app de Maharavo
 //enregistrer un adresse

@@ -1,7 +1,7 @@
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Vibration } from "react-native";
 
 export const useLocation = () => {
   const [location, setLocation] = useState(null);
@@ -13,7 +13,7 @@ export const useLocation = () => {
       const interval = setInterval(() => {
         //active tous les 10mins
         pressActive();
-      }, 600000);
+      }, 200000);
       return () => clearInterval(interval);
     }
   }, [gpsActive]);
@@ -51,7 +51,7 @@ export const useLocation = () => {
         }),
       3000
     );
-
+    Vibration.vibrate([0, 500, 200, 500, 200, 500]);
     setGpsActive(true);
     Alert.alert("GPS activé !");
   };

@@ -68,8 +68,8 @@ export function useGuide(destination, destinationCoords) {
           { language: "fr-FR" }
         );
       }
+      derniere_annonceRef.current = now;
     }
-    derniere_annonceRef.current = now;
   };
 
   const startGuide = () => {
