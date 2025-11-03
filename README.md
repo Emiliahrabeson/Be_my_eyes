@@ -48,3 +48,9 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+### Mioty
+
+To measure the step we need a smartphone with a built-in accelerometer and for position and speed we need an integrated GPS, after that we need to install those libraries
+expo install expo-sensors expo-location
+

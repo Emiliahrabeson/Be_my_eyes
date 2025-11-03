@@ -4,7 +4,6 @@
     "slug": "Be-My-Eyes",
     "version": "1.0.0",
     "orientation": "portrait",
-    // "icon": "./assets/images/icon.png",
     "scheme": "bemyeyes",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,6 +11,9 @@
       "supportsTablet": true
     },
     "android": {
+      "permissions": [
+        "ACTIVITY_RECOGNITION"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -19,7 +21,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aliciaandriantsara.BeMyEyes"
     },
     "web": {
       "output": "static",
@@ -43,6 +46,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e59d270f-9990-428a-bc1a-77a48af19237"
+      }
     }
   }
 }

@@ -1,7 +1,12 @@
 //boutton activation/desactivation
 
+//Mioty
+import React from "react";
+import { View, Text, Button } from "react-native";
+import ActivityTracker from "../../components/ActivityTracker";
+
 import { useRouter } from "expo-router"; //nav
-import { Button, View } from "react-native";
+//import { Button, View } from "react-native"; //nosoloiko an'io ambony io
 import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
 import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
 import { useGuide } from "../../hooks/useGuide";
@@ -28,6 +33,8 @@ export default function HomeScreen() {
         backgroundColor: "white",
       }}
     >
+      
+
       <Button
         title="entrer une destination"
         onPress={() => router.push("/(tabs)/Input")}
@@ -56,6 +63,8 @@ export default function HomeScreen() {
           <Button title="Annoncer distance maintenant" onPress={announceNow} />
         </View>
       )}
+
+
       <View style={{ marginBottom: 20 }} />
       <ControlButtons
         pressActive={activateGPS}
@@ -66,6 +75,13 @@ export default function HomeScreen() {
         address={address}
         gpsActive={gpsActive}
       />
+      
+      {/* Mioty */}
+      <View style={{ marginTop: 30, width: "100%" }}>
+        <ActivityTracker />
+      </View>
+	
+
     </View>
   );
 }
