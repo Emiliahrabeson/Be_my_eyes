@@ -1,3 +1,5 @@
+// avec ligne verte => chemin des piétons vers la destination
+
 import { useEffect, useState } from "react";
 
 export const useWalking = (currentLocation, destinationCoords) => {
@@ -53,7 +55,7 @@ export const useWalking = (currentLocation, destinationCoords) => {
       })
       .catch((err) => {
         setError("Problème réseau");
-        console.log("Erreur OSRM :", err);
+        console.log("Erreur OpenStreetMap :", err);
       })
       .finally(() => {
         setIsLoading(false);

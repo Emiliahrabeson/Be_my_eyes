@@ -1,3 +1,5 @@
+//récupère la localisation actuelle
+
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import { useEffect, useState } from "react";

@@ -1,3 +1,7 @@
+// affichage de la carte
+// point bleu => localisation actuelle
+// pointe rouge => destination
+
 import React, { useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
@@ -10,7 +14,7 @@ const MapCard = ({ location, destinationCoords }) => {
     destinationCoords
   );
 
-  console.log("DEST COORDS DANS MAP :", destinationCoords);
+  console.log("DESTination COORDS DANS MAP :", destinationCoords);
   console.log("useMap → location:", location ? "OK" : "null");
   console.log("useMap → destinationCoords:", destinationCoords);
   // si pas de location
