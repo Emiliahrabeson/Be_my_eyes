@@ -4,6 +4,7 @@ import { useRouter } from "expo-router"; //nav
 import { Button, View } from "react-native";
 import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
 import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
+import MapCard from "../../components/useMap";
 import { useGuide } from "../../hooks/useGuide";
 import { useLocation } from "../../hooks/useLocation"; //maka position actuelle pour le boutton activer
 import { useDestination } from "./destinationContext"; //boite
@@ -13,7 +14,7 @@ export default function HomeScreen() {
   const { location, address, gpsActive, activateGPS, deactivateGPS } =
     useLocation();
 
-  const { destination, distance, destinationCoords } = useDestination();
+  const { destination, distance, destinationCoords } = useDestination(); //*************** distance tsy miasa
   const { currentDistance, announceNow } = useGuide(
     destination,
     destinationCoords
@@ -34,6 +35,10 @@ export default function HomeScreen() {
       />
 
       <View style={{ marginBottom: 20 }} />
+      {gpsActive && location && (
+        <MapCard location={location} destinationCoords={destinationCoords} />
+      )}
+
       {destination && currentDistance && (
         <View
           style={{
@@ -51,6 +56,9 @@ export default function HomeScreen() {
           <Text style={{ fontSize: 18, color: "#1976d2", marginBottom: 10 }}>
             Distance: {currentDistance} km
           </Text>
+
+          {/* Bouton pour annoncer la distance tout de suite
+          <Button title="Annoncer distance maintenant" onPress={announceNow} /> */}
         </View>
       )}
       <View style={{ marginBottom: 20 }} />
@@ -66,8 +74,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-//integration de données de Mioty
-//intégration de données Ayan (obstacle,escalier)
-//liaison avec l'app de Maharavo
-//enregistrer un adresse
