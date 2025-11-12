@@ -1,7 +1,7 @@
 //boutton activation/desactivation
 
 import { useRouter } from "expo-router"; //nav
-import { Button, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
 import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
 import MapCard from "../../components/useMap";

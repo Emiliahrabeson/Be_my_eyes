@@ -94,24 +94,48 @@ export default function Input() {
       destination_address.longitude
     );
 
+    // setDestination(destinationInput);
+    // setDistance(dist);
+    // // setDestinationCoords(destination_address);
+    // setDestinationCoords({
+    //   latitude: destination_address.latitude,
+    //   longitude: destination_address.longitude,
+    // });
+
+    // Speech.speak(`Vous êtes à ${dist} kilomètres de ${destinationInput}`, {
+    //   language: "fr-FR",
+    // });
+    // if (dist <= 0.4) {
+    //   Speech.speak("Vous etes arrivé", {
+    //     language: "fr-FR",
+    //   });
+    // }
+
+    // setTimeout(() => {
+    //   router.back();
+    // }, 3000);
+
+    // setLoading(false);
+
+    // Retour propre sans crash
     setDestination(destinationInput);
     setDistance(dist);
-    setDestinationCoords(destination_address);
+    setDestinationCoords({
+      latitude: destination_address.latitude,
+      longitude: destination_address.longitude,
+    });
 
     Speech.speak(`Vous êtes à ${dist} kilomètres de ${destinationInput}`, {
       language: "fr-FR",
     });
+
     if (dist <= 0.4) {
-      Speech.speak("Vous etes arrivé", {
-        language: "fr-FR",
-      });
+      Speech.speak("Vous êtes arrivé !", { language: "fr-FR" });
     }
 
-    setTimeout(() => {
-      router.back();
-    }, 3000);
-
+    // Retour SANS setTimeout → Expo Router gère tout seul
     setLoading(false);
+    router.back(); // ← Direct, pas de timeout = pas de crash
   };
 
   return (
