@@ -35,14 +35,15 @@ export default function HomeScreen() {
   const [mqttStatus, setMqttStatus] = useState("Connexion au broker ...");
 	//Connexion MQTT
   useEffect(() => {
-    const client = mqtt.connect("wss://broker.hivemq.com:8000/mqtt");
+    console.log("Tentative de connexion MQTT...");
+    const client = mqtt.connect("wss://test.mosquitto.org:8081/mqtt");
 
     client.on("connect", () => {
+      console.log("Connecte au broker ...!");
       setMqttStatus("✅ Connecté au broker MQTT !");
       client.subscribe("maison/Temperature", (err) => {
-        if (!err) {
-          console.log("Abonné au topic maison/Temperature");
-        }
+        if (err) console.log("Erreur d'abonnement: ", err);
+	else  console.log("Abonné au topic maison/Temperature");
       });
     });
 
@@ -58,9 +59,14 @@ export default function HomeScreen() {
     });
 
     client.on("error", (err) => {
-      console.log("Erreur MQTT :", err);
+      console.log("Erreur MQTT complete:", err);
+      console.log("Details MQTT:", JSON.stringify(err));
       setMqttStatus("❌ Erreur de connexion au broker");
     });
+
+    client.on("close", () => {
+	    console.log("Connexion MQTT ferme!");
+	});
    return () => client.end();
   }, []);
 
