@@ -36,7 +36,7 @@ export default function HomeScreen() {
 	//Connexion MQTT
   useEffect(() => {
     console.log("Tentative de connexion MQTT...");
-    const client = mqtt.connect("wss://test.mosquitto.org:8081/mqtt");
+    const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
 
     client.on("connect", () => {
       console.log("Connecte au broker ...!");
@@ -59,7 +59,7 @@ export default function HomeScreen() {
     });
 
     client.on("error", (err) => {
-      console.log("Erreur MQTT complete:", err);
+      console.log("Erreur MQTT", err);
       console.log("Details MQTT:", JSON.stringify(err));
       setMqttStatus("❌ Erreur de connexion au broker");
     });
