@@ -17,6 +17,18 @@ export default function TabsLayout() {
           tabBarLabel: "Destination",
         }}
       />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          href: null,
+        }}
+      />
+      {/* <Tabs.Screen
+        name="destinationContext"
+        options={{
+          href: null,
+        }}
+      /> */}
     </Tabs>
   );
 }

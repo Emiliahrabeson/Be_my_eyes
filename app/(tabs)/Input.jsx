@@ -12,7 +12,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useDestination } from "./destinationContext";
+import { useDestination } from "../contexts/destinationContext";
 
 export default function Input() {
   const [destinationInput, setDestinationInput] = useState("");
@@ -21,21 +21,6 @@ export default function Input() {
 
   const { setDestination, setDistance, setDestinationCoords } =
     useDestination();
-
-  // const monAddresse = [
-  //   {
-  //     name: "maison",
-  //     adresse: "Antsahamarina Ambohitrimanjaka Antananarivo Madagascar",
-  //   },
-  //   {
-  //     name: "Misa",
-  //     adresse: "Université d'Antananarivo Ankatso Antananarivo Madagascar",
-  //   },
-  //   {
-  //     name: "cité",
-  //     adresse: "CUR Ankatso II Antananarivo Madagascar",
-  //   },
-  // ];
 
   //calcul de distance
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -119,7 +104,6 @@ export default function Input() {
 
     // setLoading(false);
 
-    // Retour propre sans crash
     setDestination(destinationInput);
     setDistance(dist);
     setDestinationCoords({
@@ -135,9 +119,8 @@ export default function Input() {
       Speech.speak("Vous êtes arrivé !", { language: "fr-FR" });
     }
 
-    // Retour SANS setTimeout → Expo Router gère tout seul
     setLoading(false);
-    router.back(); // ← Direct, pas de timeout = pas de crash
+    router.back();
   };
 
   return (

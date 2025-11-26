@@ -32,7 +32,6 @@ export const useWalking = (currentLocation, destinationCoords) => {
     const end_longitude = destinationCoords.longitude;
     const end_latitude = destinationCoords.latitude;
 
-    // const url = `http://router.project-osrm.org/route/v1/walking/${start_longitude},${start_latitude};${end_longitude},${end_latitude}?overview=full&geometries=geojson`;
     const url = `https://router.project-osrm.org/route/v1/walking/${start_longitude},${start_latitude};${end_longitude},${end_latitude}?overview=full&geometries=geojson&alternatives=true&steps=true&annotations=true&continue_straight=false`;
     fetch(url)
       .then((res) => res.json())
