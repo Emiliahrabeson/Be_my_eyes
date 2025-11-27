@@ -12,8 +12,6 @@ socket.on("connect", () => {
 // Event listener for incoming messages
 socket.on("incoming_message", (data) => {
   try {
-    console.log("Raw incoming data:", data);
-    // Check if the message body is of type object and contains text
     Speech.speak(data, {
       language: "fr-FR",
       pitch: 1.0,
