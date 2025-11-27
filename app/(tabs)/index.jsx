@@ -1,5 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router"; //nav
+import { useEffect } from "react";
 import {
   Button,
   ScrollView,
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import getSocket from "../../api/speech-websocket.js";
 import "../../api/speech.api.js"; //websocket speech
 import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
 import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
@@ -35,6 +37,15 @@ export default function HomeScreen() {
   //   destination,
   //   destinationCoords
   // );
+  useEffect(() => {
+    // Get the singleton socket instance
+    const socket = getSocket();
+
+    // Cleanup: Remove the event listener when the component unmounts
+    return () => {
+      socket.off("custom_response");
+    };
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 2 }}>
