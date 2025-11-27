@@ -1,36 +1,17 @@
-import * as Speech from "expo-speech";
-import { io } from "socket.io-client";
-
-// Create a Socket.IO client
-const socket = io("https://bbe-my-eyes.onrender.com");
-
-// Event listener for when the connection is established
-socket.on("connect", () => {
-  console.log("Socket.IO connection established.");
-});
-
-// Event listener for incoming messages
-socket.on("incoming_message", (data) => {
-  try {
-    if (typeof data !== "string") {
-      throw new Error("Invalid message format: expected a string.");
-    }
-    Speech.speak(data, {
-      language: "fr-FR",
-      pitch: 1.0,
-      rate: 1.0,
+export const updateMessage = (id) =>
+  fetch(`https://bbe-my-eyes.onrender.com/api/v1/speech/${id}`, {
+    method: "PATCH",
+  })
+    .then((r) => {
+      if (r.ok) {
+        console.log("Message read");
+        return r.json();
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      console.error(
+        "There was a problem with the fetch operation:",
+        error.message
+      );
     });
-  } catch (error) {
-    console.error("Error parsing message:", error.message);
-  }
-});
-
-// Event listener for errors
-socket.on("connect_error", (error) => {
-  console.error("Socket.IO connection error:", error.message);
-});
-
-// Event listener for when the connection is closed
-socket.on("disconnect", () => {
-  console.log("Socket.IO connection closed.");
-});
