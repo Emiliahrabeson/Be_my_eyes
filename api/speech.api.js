@@ -12,6 +12,9 @@ socket.on("connect", () => {
 // Event listener for incoming messages
 socket.on("incoming_message", (data) => {
   try {
+    if (typeof data !== "string") {
+      throw new Error("Invalid message format: expected a string.");
+    }
     Speech.speak(data, {
       language: "fr-FR",
       pitch: 1.0,
