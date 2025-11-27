@@ -1,5 +1,6 @@
 //entrer destination
 
+import { useTheme } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import * as Speech from "expo-speech";
@@ -8,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -18,6 +20,9 @@ export default function Input() {
   const [destinationInput, setDestinationInput] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
 
   const { setDestination, setDistance, setDestinationCoords } =
     useDestination();
@@ -81,29 +86,6 @@ export default function Input() {
       destination_address.longitude
     );
 
-    // setDestination(destinationInput);
-    // setDistance(dist);
-    // // setDestinationCoords(destination_address);
-    // setDestinationCoords({
-    //   latitude: destination_address.latitude,
-    //   longitude: destination_address.longitude,
-    // });
-
-    // Speech.speak(`Vous êtes à ${dist} kilomètres de ${destinationInput}`, {
-    //   language: "fr-FR",
-    // });
-    // if (dist <= 0.4) {
-    //   Speech.speak("Vous etes arrivé", {
-    //     language: "fr-FR",
-    //   });
-    // }
-
-    // setTimeout(() => {
-    //   router.back();
-    // }, 3000);
-
-    // setLoading(false);
-
     setDestination(destinationInput);
     setDistance(dist);
     setDestinationCoords({
@@ -124,38 +106,49 @@ export default function Input() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-      }}
-    >
-      <Text style={{ fontSize: 18, marginBottom: 20 }}>
-        Entrez votre destination :
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>Entrez votre destination :</Text>
 
       <TextInput
         value={destinationInput}
         onChangeText={setDestinationInput}
         placeholder="Ex: Antananarivo, Madagascar"
-        style={{
-          borderWidth: 1,
-          width: "80%",
-          padding: 10,
-          borderRadius: 5,
-          marginBottom: 20,
-          borderColor: "#ccc",
-        }}
+        placeholderTextColor={colors.placeholder || "#999"}
+        style={styles.input}
         editable={!loading}
       />
 
       {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color={colors.primary || "#007AFF"} />
       ) : (
         <Button title="Valider" onPress={handleValidate} />
       )}
     </View>
   );
 }
+
+const makeStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    input: {
+      borderWidth: 1,
+      width: "80%",
+      padding: 10,
+      borderRadius: 5,
+      marginBottom: 20,
+      borderColor: colors.border || "#ccc",
+      backgroundColor: colors.card || "#fff",
+      color: colors.text,
+    },
+    text: {
+      fontSize: 18,
+      marginBottom: 20,
+      color: colors.text,
+    },
+  });

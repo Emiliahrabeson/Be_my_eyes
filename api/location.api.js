@@ -12,7 +12,7 @@ export const sendLocationToServer = async (locationData) => {
   try {
     console.log(locationData);
     const response = await fetch(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOCATION}`,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CREATE_LOCATION}`,
       {
         method: "POST",
         headers: {

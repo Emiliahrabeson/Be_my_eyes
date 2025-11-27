@@ -29,3 +29,5 @@ export function DestinationProvider({ children }) {
 export function useDestination() {
   return useContext(DestinationContext);
 }
+
+export default DestinationContext;

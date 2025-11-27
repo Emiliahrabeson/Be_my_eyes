@@ -15,8 +15,8 @@ export const MESSAGES = {
 };
 
 export const API_CONFIG = {
-  BASE_URL: "http://192.168.1.164:3000",
+  BASE_URL: "https://bbe-my-eyes.onrender.com",
   ENDPOINTS: {
-    CREATE_LOCATION: "/",
+    CREATE_LOCATION: "/api/v1/locations",
   },
 };

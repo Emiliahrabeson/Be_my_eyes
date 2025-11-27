@@ -8,13 +8,21 @@ export default function TabsLayout() {
         options={{
           title: "Accueil",
           tabBarLabel: "Accueil",
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="Camera"
+        options={{
+          title: "Camera",
+          tabBarLabel: "Camera",
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="Input"
         options={{
-          title: "Destination",
-          tabBarLabel: "Destination",
+          href: null,
         }}
       />
       <Tabs.Screen
@@ -23,12 +31,6 @@ export default function TabsLayout() {
           href: null,
         }}
       />
-      {/* <Tabs.Screen
-        name="destinationContext"
-        options={{
-          href: null,
-        }}
-      /> */}
     </Tabs>
   );
 }

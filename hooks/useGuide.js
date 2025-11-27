@@ -1,5 +1,5 @@
-// // Arrivé ou non,il vous reste ...km jusqu'à ...
-// // mise à jour tous les
+// Arrivé ou non,il vous reste ...km jusqu'à ...
+// mise à jour tous les
 
 // import * as Location from "expo-location";
 // import * as Speech from "expo-speech";

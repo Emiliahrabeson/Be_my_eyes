@@ -1,5 +1,3 @@
-// services/location.service.js
-
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import { sendLocationToServer } from "../api/location.api";
