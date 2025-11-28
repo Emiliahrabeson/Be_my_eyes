@@ -66,3 +66,21 @@ eas build:list
 To delete a build in process or in attent run 
 eas build:cancel id_build_process
 
+Rehefa lany ny quota ana built
+npx expo prebuild
+eas build --local -p android
+./build/android/*.apk
+Transformer mon .AAB eb un >APK installable
+wget https://github.com/google/bundletool/releases/download/1.17.0/bundletool-all-1.17.0.jar -O bundletool.jar
+Generer le fichier .apks
+java -jar bundletool.jar build-apks \
+  --bundle=/home/mioty/projet_fabrication_numerique/react_native/Be_my_eyes/build-1763616901744.aab \
+  --output=app.apks \
+  --mode=universal
+Extraire l'APK depuis le apks
+unzip app.apks -d output_apks
+L'apk se trouve dans 
+output_apks/universal.apk
+
+eas build --local -p android --profile preview --output=app.apk
+

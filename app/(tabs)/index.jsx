@@ -14,7 +14,7 @@ import { useLocation } from "../../hooks/useLocation"; //maka position actuelle 
 import { useDestination } from "./destinationContext"; //boite
 
 //Mioty2 
-import mqtt from "mqtt";
+import mqtt from "mqtt/dist/mqtt";
 
 
 export default function HomeScreen() {
@@ -32,40 +32,55 @@ export default function HomeScreen() {
 	//Etats pour Mqtt
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
+//Mioty5
+  const [ultrason1, setUltrason1] = useState(null);
+  const [ultrason2, setUltrason2] = useState(null);
+
   const [mqttStatus, setMqttStatus] = useState("Connexion au broker ...");
 	//Connexion MQTT
   useEffect(() => {
+
     console.log("Tentative de connexion MQTT...");
-    const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
+    const client = mqtt.connect("ws://192.168.1.171:9001");
 
     client.on("connect", () => {
-      console.log("Connecte au broker ...!");
-      setMqttStatus("✅ Connecté au broker MQTT !");
-      client.subscribe("maison/Temperature", (err) => {
+      console.log("Connecte au broker Mosquitto ...!");
+      setMqttStatus("✅ Connecté au broker Mosquitto !");
+      client.subscribe("maison/Capteurs", (err) => {
         if (err) console.log("Erreur d'abonnement: ", err);
-	else  console.log("Abonné au topic maison/Temperature");
+	else  console.log("Abonné a maison/Capteurs");
       });
     });
+    client.on("error", (err) => {
+      console.log("Erreur MQTT", err);
+      //console.log("Details MQTT:", JSON.stringify(err));
+      setMqttStatus("❌ Erreur de connexion au broker");
+    });
+    client.on("reconnect", () => {
+      console.log("### RECONNEXION MQTT ###");
+    });
+
 
     client.on("message", (topic, message) => {
       try {
         const data = JSON.parse(message.toString());
         console.log("Reçu MQTT :", data);
-        setTemperature(data.temperature);
-        setHumidity(data.humidite);
+        if ("temperature" in data) setTemperature(data.temperature);
+        if ("humidite" in data) setHumidity(data.humidite);
+        if ("ultrason1" in data) setUltrason1(data.ultrason1);
+        if ("ultrason2" in data) setUltrason2(data.ultrason2);
+	//setTemperature(data.temperature);
+        //setHumidity(data.humidite);
       } catch (error) {
         console.error("Erreur parsing MQTT :", error);
       }
     });
 
-    client.on("error", (err) => {
-      console.log("Erreur MQTT", err);
-      console.log("Details MQTT:", JSON.stringify(err));
-      setMqttStatus("❌ Erreur de connexion au broker");
-    });
+    
 
+    
     client.on("close", () => {
-	    console.log("Connexion MQTT ferme!");
+	    console.log("MQTT deconnecte !");
 	});
    return () => client.end();
   }, []);
@@ -171,6 +186,13 @@ export default function HomeScreen() {
           🌡️ Température : {temperature ?? "--"} °C
         </Text>
         <Text>💧 Humidité : {humidity ?? "--"} %</Text>
+        
+
+
+        <Text style={{ marginTop: 10 }}>
+	  📏 Distance Ultrason 1 : {ultrason1 ?? "--"} cm
+	</Text>
+        <Text>📏 Distance Ultrason 2 : {ultrason2 ?? "--"} cm</Text>
       </View>
 
       <View style={{ marginTop: 30, width: "100%" }}>
@@ -187,3 +209,4 @@ export default function HomeScreen() {
 //intégration de données Ayan
 //liaison avec l'app de Maharavo
 //enregistrer un adresse
+
