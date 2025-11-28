@@ -1,5 +1,3 @@
-// utils/autoSuggest.utils.js
-
 import { LOCATION_CONFIG } from "../constants/location.constants";
 import { autoSuggestNearbyPlaces } from "../service/autoSuggestService";
 

@@ -33,10 +33,6 @@ export default function HomeScreen() {
   } = useLocation();
 
   const { destinationCoords } = useDestination();
-  // const { currentDistance, announceNow } = useGuide(
-  //   destination,
-  //   destinationCoords
-  // );
   useEffect(() => {
     // Get the singleton socket instance
     const socket = getSocket();
