@@ -1,16 +1,13 @@
-//boutton activation/desactivation
-
 //Mioty
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, ScrollView} from "react-native";//Mioty3
+import { View, Text, Button, ScrollView } from "react-native";//Mioty3
 import ActivityTracker from "../../components/ActivityTracker";
 
 import { useRouter } from "expo-router"; //nav
-//import { Button, View } from "react-native"; //nosoloiko an'io ambony io
 import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
-import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
+import LocationDisplay from "../../components/LocationDisplay"; //affichage localisation actuelle
 import { useGuide } from "../../hooks/useGuide";
-import { useLocation } from "../../hooks/useLocation"; //maka position actuelle pour le boutton activer
+import { useLocation } from "../../hooks/useLocation"; //position actuelle
 import { useDestination } from "./destinationContext"; //boite
 
 //Mioty2 
@@ -22,28 +19,29 @@ export default function HomeScreen() {
   const { location, address, gpsActive, activateGPS, deactivateGPS } =
     useLocation();
 
-  const { destination, distance, destinationCoords } = useDestination(); //*************** distance tsy miasa
+  const { destination, distance, destinationCoords } = useDestination();
   const { currentDistance, announceNow } = useGuide(
     destination,
     destinationCoords
   );
 
-//Mioty2
-	//Etats pour Mqtt
-  const [temperature, setTemperature] = useState(null);
-  const [humidity, setHumidity] = useState(null);
+  //Mioty2
+  // Etats pour Mqtt
+  const [ultrason1, setUltrason1] = useState(null);
+  const [ultrason2, setUltrason2] = useState(null);
   const [mqttStatus, setMqttStatus] = useState("Connexion au broker ...");
-	//Connexion MQTT
+
+  //Connexion MQTT
   useEffect(() => {
     console.log("Tentative de connexion MQTT...");
     const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
 
     client.on("connect", () => {
-      console.log("Connecte au broker ...!");
+      console.log("Connecté au broker ...!");
       setMqttStatus("✅ Connecté au broker MQTT !");
-      client.subscribe("maison/Temperature", (err) => {
+      client.subscribe("maison/Ultrasons", (err) => {
         if (err) console.log("Erreur d'abonnement: ", err);
-	else  console.log("Abonné au topic maison/Temperature");
+        else console.log("Abonné au topic maison/Ultrasons");
       });
     });
 
@@ -51,8 +49,8 @@ export default function HomeScreen() {
       try {
         const data = JSON.parse(message.toString());
         console.log("Reçu MQTT :", data);
-        setTemperature(data.temperature);
-        setHumidity(data.humidite);
+        setUltrason1(data.ultrason1);
+        setUltrason2(data.ultrason2);
       } catch (error) {
         console.error("Erreur parsing MQTT :", error);
       }
@@ -65,13 +63,13 @@ export default function HomeScreen() {
     });
 
     client.on("close", () => {
-	    console.log("Connexion MQTT ferme!");
-	});
-   return () => client.end();
+      console.log("Connexion MQTT fermée!");
+    });
+
+    return () => client.end();
   }, []);
 
   return (
-    //Mioty3
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{
@@ -81,47 +79,33 @@ export default function HomeScreen() {
       }}
       showsVerticalScrollIndicator={false}
     >
-    /*Titre principale*/
+      {/* Titre principal */}
       <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 20 }}>🏠 Accueil</Text>
-    
 
-      {/* <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-      > */}
-      
-      /*Bouton de destination*/
+      {/* Bouton de destination */}
       <Button
         title="entrer une destination"
         onPress={() => router.push("/(tabs)/Input")}
-	      //Mioty3
-	      color="#1976d2"
+        color="#1976d2"
       />
 
-      /*Section destination*/
+      {/* Section destination */}
       <View style={{ marginBottom: 20 }} />
       {destination && currentDistance && (
         <View
           style={{
-	          marginTop: 20,
+            marginTop: 20,
             padding: 15,
             backgroundColor: "#e3f2fd",
             borderRadius: 10,
-            //marginBottom: 20,
             width: "90%",
           }}
         >
-            {/* <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}> */}
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>
             Destination: {destination}
           </Text>
 
-          {/* <Text style={{ fontSize: 18, color: "#1976d2", marginBottom: 10 }}> */}
-          <Text style={{ fontSize: 18, color: "#1976d2", marginVertical: 10 }}>  
+          <Text style={{ fontSize: 18, color: "#1976d2", marginVertical: 10 }}>
             Distance: {currentDistance} km
           </Text>
 
@@ -130,8 +114,7 @@ export default function HomeScreen() {
         </View>
       )}
 
-	    /*Control GPS*/
-      {/* <View style={{ marginBottom: 20 }} /> */}
+      {/* Control GPS */}
       <View style={{ marginTop: 30, width: "100%", alignItems: "center" }}>
         <ControlButtons
           pressActive={activateGPS}
@@ -142,48 +125,32 @@ export default function HomeScreen() {
           address={address}
           gpsActive={gpsActive}
         />
-      
-        {/* Mioty */}
-        {/* <View style={{ marginTop: 30, width: "100%" }}>
-          <ActivityTracker />
-        </View> */}
       </View>
 
-        ///Mioty2
-	      //Mioty 3
-	      //Donnees environnementales
+      {/* Données environnementales (ici ultrasons) */}
       <View
         style={{
           marginTop: 30,
           backgroundColor: "#f1f8e9",
           padding: 15,
           borderRadius: 10,
-          //alignItems: "center",
           width: "100%",
         }}
       >
         <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 5 }}>
-          🌿 Données environnementales
+          🌿 Données des ultrasons
         </Text>
-        {/* //<Text>{mqttStatus}</Text> */}
         <Text style={{ color: "#555" }}>{mqttStatus}</Text>
         <Text style={{ marginTop: 10 }}>
-          🌡️ Température : {temperature ?? "--"} °C
+          📏 Distance Ultrasons 1 : {ultrason1 ?? "--"} cm
         </Text>
-        <Text>💧 Humidité : {humidity ?? "--"} %</Text>
+        <Text>📏 Distance Ultrasons 2 : {ultrason2 ?? "--"} cm</Text>
       </View>
 
       <View style={{ marginTop: 30, width: "100%" }}>
         <ActivityTracker />
       </View>
-	
-
     </ScrollView>
   );
 }
 
-//le tapoter 2x ...
-//integration de données de Mioty
-//intégration de données Ayan
-//liaison avec l'app de Maharavo
-//enregistrer un adresse
