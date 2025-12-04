@@ -1,0 +1,30 @@
+name: Build APK
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Setup Expo and EAS
+        run: |
+          npm install -g eas-cli
+          npm install
+
+      - name: Build APK
+        run: eas build --platform android --local --non-interactive --output ./app-build.apk 
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: upload apk
+        uses:  actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: ./*.apk
+
