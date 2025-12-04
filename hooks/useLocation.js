@@ -5,7 +5,6 @@ import {
   MESSAGES,
   VIBRATION_PATTERN,
 } from "../constants/location.constants";
-import { clearAnnouncedPlaces } from "../service/autoSuggestService";
 import {
   announceAddress,
   getAddressFromCoords,
@@ -13,30 +12,11 @@ import {
   requestLocationPermission,
   submitLocationData,
 } from "../service/location.service";
-import {
-  shouldTriggerAutoSuggest,
-  triggerAutoSuggest,
-} from "../utils/autoSuggest.utils";
-
 export const useLocation = () => {
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [gpsActive, setGpsActive] = useState(false);
-  const [autoSuggestEnabled, setAutoSuggestEnabled] = useState(true);
-  const [lastSuggestionTime, setLastSuggestionTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Utiliser useRef pour éviter les dépendances dans useEffect
-  const autoSuggestEnabledRef = useRef(autoSuggestEnabled);
-  const lastSuggestionTimeRef = useRef(lastSuggestionTime);
-
-  useEffect(() => {
-    autoSuggestEnabledRef.current = autoSuggestEnabled;
-  }, [autoSuggestEnabled]);
-
-  useEffect(() => {
-    lastSuggestionTimeRef.current = lastSuggestionTime;
-  }, [lastSuggestionTime]);
 
   // Log pour debug
   useEffect(() => {
@@ -72,21 +52,6 @@ export const useLocation = () => {
 
       // Annonce vocale
       announceAddress(addr.formattedAddress);
-
-      // Gestion de l'auto-suggestion
-      if (
-        shouldTriggerAutoSuggest(
-          autoSuggestEnabledRef.current,
-          localisation.coords.speed,
-          lastSuggestionTimeRef.current
-        )
-      ) {
-        triggerAutoSuggest(
-          localisation.coords.latitude,
-          localisation.coords.longitude,
-          setLastSuggestionTime
-        );
-      }
 
       // Envoi des données au serveur
       await submitLocationData(localisation.coords, addr);
@@ -143,24 +108,12 @@ export const useLocation = () => {
     Alert.alert(MESSAGES.GPS_DEACTIVATED);
   }, []);
 
-  /**
-   * Active/désactive l'auto-suggestion
-   */
-  const toggleAutoSuggest = useCallback((value) => {
-    setAutoSuggestEnabled(value);
-    if (!value) {
-      clearAnnouncedPlaces();
-    }
-  }, []);
-
   return {
     location,
     address,
     gpsActive,
-    autoSuggestEnabled,
     isLoading,
     activateGPS,
     deactivateGPS,
-    toggleAutoSuggest,
   };
 };

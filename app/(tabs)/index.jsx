@@ -1,47 +1,95 @@
 import { useTheme } from "@react-navigation/native";
-import { useRouter } from "expo-router"; //nav
-import { useEffect } from "react";
+import { useRouter } from "expo-router";
+import mqtt from "mqtt";
+import { useEffect, useState } from "react";
 import {
   Button,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
+  Vibration,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import getSocket from "../../api/speech-websocket.js";
-import "../../api/speech.api.js"; //websocket speech
-import ControlButtons from "../../components/ControlButton"; //boutton active/desactive
-import LocationDisplay from "../../components/LocationDisplay"; //juste un affichage de la localisation actuelle ee
-import MapCard from "../../components/useMap"; //affichage de la carte
-import { useLocation } from "../../hooks/useLocation"; //maka position actuelle pour le boutton activer
+import "../../api/speech.api.js";
+import ActivityTracker from "../../components/ActivityTracker";
+import ControlButtons from "../../components/ControlButton";
+import LocationDisplay from "../../components/LocationDisplay";
+import MapCard from "../../components/useMap";
+import { useLocation } from "../../hooks/useLocation";
 import { useDestination } from "../contexts/destinationContext";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const {
-    location,
-    address,
-    gpsActive,
-    activateGPS,
-    deactivateGPS,
-    autoSuggestEnabled,
-    toggleAutoSuggest,
-  } = useLocation();
+  const { location, address, gpsActive, activateGPS, deactivateGPS } =
+    useLocation();
 
   const { destinationCoords } = useDestination();
-  useEffect(() => {
-    // Get the singleton socket instance
-    const socket = getSocket();
+  const [ultrason1, setUltrason1] = useState(null);
+  const [ultrason2, setUltrason2] = useState(null);
+  const [mqttStatus, setMqttStatus] = useState("Connexion au broker ...");
 
-    // Cleanup: Remove the event listener when the component unmounts
+  useEffect(() => {
+    const socket = getSocket();
     return () => {
       socket.off("custom_response");
     };
   }, []);
+
+  // Connexion MQTT
+  useEffect(() => {
+    console.log("Tentative de connexion MQTT...");
+    const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
+
+    client.on("connect", () => {
+      console.log("Connecté au broker ...!");
+      setMqttStatus("✅ Connecté au broker MQTT !");
+      client.subscribe("maison/Ultrasons", (err) => {
+        if (err) console.log("Erreur d'abonnement: ", err);
+        else console.log("Abonné au topic maison/Ultrasons");
+      });
+    });
+
+    client.on("message", (topic, message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        console.log("Reçu MQTT :", data);
+        setUltrason1(data.ultrason1);
+        setUltrason2(data.ultrason2);
+      } catch (error) {
+        console.error("Erreur parsing MQTT :", error);
+      }
+    });
+
+    client.on("error", (err) => {
+      console.log("Erreur MQTT", err);
+      console.log("Details MQTT:", JSON.stringify(err));
+      setMqttStatus("❌ Erreur de connexion au broker");
+    });
+
+    client.on("close", () => {
+      console.log("Connexion MQTT fermée!");
+    });
+
+    return () => client.end();
+  }, []);
+
+  useEffect(() => {
+    const SEUIL_DISTANCE = 100;
+
+    if (ultrason1 !== null && ultrason1 <= SEUIL_DISTANCE) {
+      console.log("⚠️ Obstacle détecté à droite:", ultrason1, "cm");
+      Vibration.vibrate(500);
+    }
+
+    if (ultrason2 !== null && ultrason2 <= SEUIL_DISTANCE) {
+      console.log("⚠️ Obstacle détecté à gauche:", ultrason2, "cm");
+      Vibration.vibrate([0, 500, 200, 500]);
+    }
+  }, [ultrason1, ultrason2]);
 
   return (
     <SafeAreaView style={{ flex: 2 }}>
@@ -80,26 +128,6 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {/*suggestions  */}
-          {gpsActive && (
-            <View style={styles.suggestionControl}>
-              <View style={styles.suggestionInfo}>
-                <Text style={styles.suggestionLabel}>
-                  🔔 Suggestions automatiques
-                </Text>
-                <Text style={styles.suggestionSubtext}>
-                  {autoSuggestEnabled ? "Actives" : "Désactivées"}
-                </Text>
-              </View>
-              <Switch
-                value={autoSuggestEnabled}
-                onValueChange={toggleAutoSuggest}
-                trackColor={{ false: "#767577", true: "#4CAF50" }}
-                thumbColor={autoSuggestEnabled ? "#fff" : "#f4f3f4"}
-              />
-            </View>
-          )}
-
           <View style={styles.controlSection}>
             <Text style={styles.sectionTitle}>Contrôle GPS</Text>
             <ControlButtons
@@ -115,11 +143,16 @@ export default function HomeScreen() {
               textColor={colors.text}
             />
           </View>
+
+          <View style={{ marginTop: 30, width: "100%" }}>
+            <ActivityTracker />
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>
   );
 }
+
 const makeStyles = (colors) =>
   StyleSheet.create({
     container: {
@@ -157,8 +190,6 @@ const makeStyles = (colors) =>
       color: "white",
       fontWeight: "500",
     },
-
-    // Styles pour le switch
     suggestionControl: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -186,7 +217,6 @@ const makeStyles = (colors) =>
       fontSize: 12,
       color: colors.text,
     },
-
     mapContainer: {
       marginBottom: 20,
       marginRight: -40,

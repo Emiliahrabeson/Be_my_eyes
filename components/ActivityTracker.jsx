@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
+import {sendStepToServer} from "../api/step.api.js"
 
 export default function ActivityTracker() {
   const [steps, setSteps] = useState(0);
@@ -14,8 +15,8 @@ export default function ActivityTracker() {
     let subscription;
     const subscribe = async () => {
       const available = await Pedometer.isAvailableAsync();
-	console.log("Podomètre disponible ?", available);
-	if (available) {
+      console.log("Podomètre disponible ?", available);
+      if (available) {
         subscription = Pedometer.watchStepCount(result => {
           setSteps(result.steps);
         });
@@ -35,7 +36,6 @@ export default function ActivityTracker() {
         console.log("Permission GPS refusée");
         return;
       }
-
       await Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 1 },
         (loc) => {
@@ -48,7 +48,7 @@ export default function ActivityTracker() {
 
   // --- Calcul des calories ---
   useEffect(() => {
-    const caloriesBrulees = steps * 0.04; // moyenne kcal/pas
+    const caloriesBrulees = steps * 0.04;
     setCalories(caloriesBrulees.toFixed(1));
   }, [steps]);
 
@@ -65,9 +65,15 @@ export default function ActivityTracker() {
     return () => clearInterval(interval);
   }, [date]);
 
+  // --- Log des données (remplace l'envoi au serveur) ---
+  useEffect(() => {
+    console.log(' Données d\'activité:', { steps, calories, speed });
+    sendStepToServer({ step : steps, calories, speed});
+  }, [steps, speed, date]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Suivi d'activité</Text>
+      <Text style={styles.title}>📊 Suivi d'activité</Text>
       <Text style={styles.text}>👣 Pas : {steps}</Text>
       <Text style={styles.text}>⚡ Vitesse : {speed} km/h</Text>
       <Text style={styles.text}>🔥 Calories : {calories} kcal</Text>
@@ -77,17 +83,20 @@ export default function ActivityTracker() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    backgroundColor: "#e3f2fd",
+    padding: 15,
+    borderRadius: 10,
     alignItems: "center",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#1976d2",
   },
   text: {
     fontSize: 16,
     marginVertical: 4,
+    color: "#333",
   },
 });
-

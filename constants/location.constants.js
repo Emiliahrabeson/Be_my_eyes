@@ -18,5 +18,6 @@ export const API_CONFIG = {
   BASE_URL: "https://bbe-my-eyes.onrender.com",
   ENDPOINTS: {
     CREATE_LOCATION: "/api/v1/locations",
+    CREATE_STEP: "/api/v1/steps",
   },
 };

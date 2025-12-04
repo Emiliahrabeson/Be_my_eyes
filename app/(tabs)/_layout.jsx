@@ -12,14 +12,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="Camera"
-        options={{
-          title: "Camera",
-          tabBarLabel: "Camera",
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
         name="Input"
         options={{
           href: null,
