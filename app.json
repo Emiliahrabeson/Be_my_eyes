@@ -17,6 +17,7 @@
     },
     "android": {
       "permissions": [
+        "INTERNET",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "ACTIVITY_RECOGNITION",
@@ -25,20 +26,19 @@
       ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+
       },
+
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDZ00jNRlwXcs7o38gy_2Ypfr4AwfPS68"
         }
       },
+     
       "package": "com.emiliah.BeMyEyes"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-location",

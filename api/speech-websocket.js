@@ -8,7 +8,7 @@ let socket; // Declare a variable to hold the socket instance
 const getSocket = () => {
   if (!socket) {
     // Initialize the socket only if it hasn't been initialized yet
-    socket = io("ws://192.168.1.172:3000");
+    socket = io("ws://bbe-my-eyes.onrender.com");
 
     // Event listener for when the connection is established
     socket.on("connect", () => {
